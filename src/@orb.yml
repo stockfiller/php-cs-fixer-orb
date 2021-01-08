@@ -47,18 +47,20 @@ jobs:
                 type: string
                 default: "circleci@${CIRCLE_PROJECT_USERNAME}.example"
         executor: << parameters.executor >>
+        environment:
+            PHP_CS_FIXER_FLAGS: --using-cache=no
         steps:
             - checkout
             - composer/install_dependencies
             -   run:
                     name: "Check coding standards"
-                    command: << parameters.path >> fix --dry-run --stop-on-violation << parameters.flags >>
+                    command: << parameters.path >> fix --dry-run --stop-on-violation ${PHP_CS_FIXER_FLAGS} << parameters.flags >>
             -   when:
                     condition: << parameters.commit >>
                     steps:
                         -   run:
                                 name: "Fix coding standards"
-                                command: << parameters.path >> fix << parameters.flags >>
+                                command: << parameters.path >> fix ${PHP_CS_FIXER_FLAGS} << parameters.flags >>
                                 when: on_fail
                         -   run:
                                 name: "Commit changes to source code"
