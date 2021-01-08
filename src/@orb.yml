@@ -56,16 +56,15 @@ jobs:
                     name: "Check coding standards"
                     command: << parameters.path >> fix --dry-run --stop-on-violation ${PHP_CS_FIXER_FLAGS} << parameters.flags >>
             -   when:
-                    condition:
-                        and:
-                            - << parameters.commit >>
-                            - on_fail
+                    condition: << parameters.commit >>
                     steps:
                         -   run:
                                 name: "Fix coding standards"
+                                when: on_fail
                                 command: << parameters.path >> fix ${PHP_CS_FIXER_FLAGS} << parameters.flags >>
                         -   run:
                                 name: "Commit changes to source code"
+                                when: on_fail
                                 command: |-
                                     git config --global user.email "<< parameters.commit-email >>"
                                     git config --global user.name "<< parameters.commit-author >>"
