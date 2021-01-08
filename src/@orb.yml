@@ -1,0 +1,70 @@
+version: 2.1
+
+description: Fix coding standards using PHP CS Fixer
+
+display:
+    home_url: "https://stockfiller.com"
+    source_url: "https://github.com/stockfiller/php-cs-fixer-orb"
+
+orbs:
+    composer: stockfiller/composer@0.0.30
+
+executors:
+    default:
+        docker:
+            -   image: cimg/php:7.4
+        resource_class: small
+
+jobs:
+    fix:
+        parameters:
+            executor:
+                type: executor
+                default: default
+                description: Environment to run inside
+            path:
+                type: string
+                default: vendor/bin/php-cs-fixer
+                description: Path to the PHP CS Fixer executable inside the environment. Defaults to installed locally inside repository.
+            flags:
+                type: string
+                description: Optional PHP CS Fixer flags to append to the fix command
+                default: ""
+            commit:
+                description: If true, will commit back coding standard fixes
+                type: boolean
+                default: false
+            commit-message:
+                description: Message of the commit for coding standards
+                type: string
+                default: "[CircleCI] Fix coding standards"
+            commit-author:
+                description: Name of the commit author
+                type: string
+                default: CircleCI
+            commit-email:
+                description: E-mail of the commit author
+                type: string
+                default: "circleci@${CIRCLE_PROJECT_USERNAME}.example"
+        executor: << parameters.executor >>
+        steps:
+            - checkout
+            - composer/install_dependencies
+            -   run:
+                    name: "Check coding standards"
+                    command: << parameters.path >> fix --dry-run --stop-on-violation << parameters.flags >>
+            -   when:
+                    condition: << parameters.commit >>
+                    steps:
+                        -   run:
+                                name: "Fix coding standards"
+                                command: << parameters.path >> fix << parameters.flags >>
+                                when: on_fail
+                        -   run:
+                                name: "Commit changes to source code"
+                                command: |-
+                                    git config --global user.email "<< parameters.commit-email >>"
+                                    git config --global user.name "<< parameters.commit-author >>"
+                                    git commit --all --message "<< parameters.commit-message >>"
+                                    git push origin HEAD
+                                when: on_fail
