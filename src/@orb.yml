@@ -19,20 +19,20 @@ jobs:
     fix:
         parameters:
             executor:
+                description: Environment to run inside
                 type: executor
                 default: default
-                description: Environment to run inside
-            path:
+            bin:
+                description: Path to the PHP CS Fixer binary
                 type: string
                 default: vendor/bin/php-cs-fixer
-                description: Path to the PHP CS Fixer executable inside the environment. Defaults to installed locally inside repository.
             rules:
                 description: PHP CS Fixer rules
                 type: string
                 default: ""
             flags:
-                type: string
                 description: Optional PHP CS Fixer flags to append to the fix command
+                type: string
                 default: ""
             commit:
                 description: If true, will commit back coding standard fixes
@@ -50,6 +50,10 @@ jobs:
                 description: E-mail of the commit author
                 type: string
                 default: "circleci@${CIRCLE_PROJECT_USERNAME}.example"
+            path:
+                description: The path to fix files in
+                type: string
+                default: .
         executor: << parameters.executor >>
         environment:
             PHP_CS_FIXER_FLAGS: >-
@@ -61,14 +65,14 @@ jobs:
             - composer/install
             -   run:
                     name: "Check coding standards"
-                    command: << parameters.path >> fix --dry-run --stop-on-violation ${PHP_CS_FIXER_FLAGS}
+                    command: << parameters.path >> fix --dry-run --stop-on-violation ${PHP_CS_FIXER_FLAGS} << parameters.path >>
             -   when:
                     condition: << parameters.commit >>
                     steps:
                         -   run:
                                 name: "Fix coding standards"
                                 when: on_fail
-                                command: << parameters.path >> fix ${PHP_CS_FIXER_FLAGS}
+                                command: << parameters.path >> fix ${PHP_CS_FIXER_FLAGS} << parameters.path >>
                         -   run:
                                 name: "Commit changes to source code"
                                 when: on_fail
