@@ -65,14 +65,14 @@ jobs:
             - composer/install
             -   run:
                     name: "Check coding standards"
-                    command: << parameters.path >> fix --dry-run --stop-on-violation ${PHP_CS_FIXER_FLAGS} << parameters.path >>
+                    command: << parameters.bin >> fix --dry-run --stop-on-violation ${PHP_CS_FIXER_FLAGS} << parameters.path >>
             -   when:
                     condition: << parameters.commit >>
                     steps:
                         -   run:
                                 name: "Fix coding standards"
                                 when: on_fail
-                                command: << parameters.path >> fix ${PHP_CS_FIXER_FLAGS} << parameters.path >>
+                                command: << parameters.bin >> fix ${PHP_CS_FIXER_FLAGS} << parameters.path >>
                         -   run:
                                 name: "Commit changes to source code"
                                 when: on_fail
