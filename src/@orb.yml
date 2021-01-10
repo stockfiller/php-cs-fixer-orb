@@ -55,24 +55,31 @@ jobs:
                 type: string
                 default: .
         executor: << parameters.executor >>
-        environment:
-            PHP_CS_FIXER_FLAGS: >-
-                --using-cache=no
-                <<# parameters.rules >> --rules=<< parameters.rules >> <</ parameters.rules >>
-                << parameters.flags >>
         steps:
             - checkout
             - composer/install
             -   run:
                     name: "Check coding standards"
-                    command: << parameters.bin >> fix --dry-run --stop-on-violation ${PHP_CS_FIXER_FLAGS} << parameters.path >>
+                    command: >-
+                        << parameters.bin >> fix
+                        --dry-run
+                        --stop-on-violation
+                        --using-cache=no
+                        <<# parameters.rules >> --rules=<< parameters.rules >> <</ parameters.rules >>
+                        << parameters.flags >>
+                        << parameters.path >>
             -   when:
                     condition: << parameters.commit >>
                     steps:
                         -   run:
                                 name: "Fix coding standards"
                                 when: on_fail
-                                command: << parameters.bin >> fix ${PHP_CS_FIXER_FLAGS} << parameters.path >>
+                                command: >-
+                                    << parameters.bin >> fix
+                                    --using-cache=no
+                                    <<# parameters.rules >> --rules=<< parameters.rules >> <</ parameters.rules >>
+                                    << parameters.flags >>
+                                    << parameters.path >>
                         -   run:
                                 name: "Commit changes to source code"
                                 when: on_fail
