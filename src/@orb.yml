@@ -58,7 +58,7 @@ jobs:
         environment:
             PHP_CS_FIXER_FLAGS: >-
                 --using-cache=no
-                <<# parameters.rules >> --rules << parameters.rules >> <</ parameters.rules >>
+                <<# parameters.rules >> --rules=<< parameters.rules >> <</ parameters.rules >>
                 << parameters.flags >>
         steps:
             - checkout
