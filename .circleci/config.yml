@@ -27,10 +27,12 @@ jobs:
     steps:
       - checkout
       - php-cs-fixer/check:
-          path: tests
+          path: tests/success.php
           rules: "@PSR2"
       - php-cs-fixer/fix:
           commit: false
+          path: tests/error.php
+          rules: "@PSR2"
 
 workflows:
   test-pack:
