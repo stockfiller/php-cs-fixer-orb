@@ -1,0 +1,9 @@
+description: >-
+  Check, fix coding standards and commit changed files back to the repository.
+usage:
+  version: 2.1
+  orbs:
+    stockfiller/php-cs-fixer@1.0.0
+  workflows:
+    foo:
+      - php-cs-fixer/fix

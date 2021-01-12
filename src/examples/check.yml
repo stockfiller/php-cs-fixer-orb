@@ -1,0 +1,16 @@
+description: >-
+  Check coding standards and fail the pipeline if the source code does not adhere to them
+usage:
+  version: 2.1
+  orbs:
+    stockfiller/php-cs-fixer@1.0.0
+    stockfiller/composer@2.0.0
+  jobs:
+    check:
+      steps:
+        - checkout
+        - composer/install
+        - php-cs-fixer/check
+  workflows:
+    foo:
+      - check
