@@ -1,7 +1,8 @@
 version: 2.1
 
 orbs:
-  composer: stockfiller/php-cs-fixer@<<pipeline.parameters.dev-orb-version>>
+  php-cs-fixer: stockfiller/php-cs-fixer@<<pipeline.parameters.dev-orb-version>>
+  composer: stockfiller/composer@1
   orb-tools: circleci/orb-tools@10.0
   bats: circleci/bats@1.0
   shellcheck: circleci/shellcheck@2.0
@@ -26,11 +27,17 @@ jobs:
       - image: cimg/php:7.4
     steps:
       - checkout
+      - composer/install:
+          working-dir: tests
       - php-cs-fixer/check:
-          path: tests
+          bin: tests/vendor/bin/php-cs-fixer
+          path: tests/success.php
           rules: "@PSR2"
       - php-cs-fixer/fix:
+          bin: tests/vendor/bin/php-cs-fixer
           commit: false
+          path: tests/error.php
+          rules: "@PSR2"
 
 workflows:
   test-pack:
@@ -38,16 +45,17 @@ workflows:
     jobs:
       - orb-tools/lint
       - orb-tools/pack
-      - shellcheck/check:
-          dir: ./src/scripts
-          exclude: SC2148
+      # Uncomment if scripts are added
+      # - shellcheck/check:
+      #    dir: ./src/scripts
+      #    exclude: SC2148
       - orb-tools/publish-dev:
           orb-name: stockfiller/php-cs-fixer
           context: orb-publishing
           requires:
             - orb-tools/lint
             - orb-tools/pack
-            - shellcheck/check
+            # - shellcheck/check
       - orb-tools/trigger-integration-tests-workflow:
           context: orb-publishing
           requires: [ orb-tools/publish-dev ]
@@ -61,7 +69,7 @@ workflows:
           add-pr-comment: false
           fail-if-semver-not-indicated: true
           publish-version-tag: true
-          ssh-fingerprints: "ac:8d:d2:2b:8c:d9:a7:79:76:18:a0:78:5d:b4:a8:63"
+          ssh-fingerprints: "08:63:2c:89:06:3c:bc:ee:10:53:f9:05:37:5f:c5:48"
           context: [ orb-publishing ]
           requires: [ integration-test ]
           filters:
