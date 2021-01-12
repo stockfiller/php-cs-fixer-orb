@@ -50,7 +50,7 @@ workflows:
           requires:
             - orb-tools/lint
             - orb-tools/pack
-            - shellcheck/check
+            # - shellcheck/check
       - orb-tools/trigger-integration-tests-workflow:
           context: orb-publishing
           requires: [ orb-tools/publish-dev ]
