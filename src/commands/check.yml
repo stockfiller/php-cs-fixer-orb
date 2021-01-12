@@ -32,7 +32,7 @@ parameters:
   path:
     description: The path to fix files in
     type: string
-    default: .
+    default: ""
   config:
     description: The path to a .php_cs file
     type: string
@@ -47,4 +47,4 @@ steps:
         --using-cache=no
         <<# parameters.rules >> --rules=<< parameters.rules >> <</ parameters.rules >>
         <<# parameters.config >> --config=<< parameters.config >> <</ parameters.config >>
-        << parameters.path >>
+        <<# parameters.path >> << parameters.path >> <</ parameters.path >>

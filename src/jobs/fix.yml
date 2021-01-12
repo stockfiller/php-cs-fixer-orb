@@ -35,7 +35,7 @@ parameters:
   path:
     description: The path to fix files in
     type: string
-    default: .
+    default: ""
   config:
     description: The path to a .php_cs file
     type: string
