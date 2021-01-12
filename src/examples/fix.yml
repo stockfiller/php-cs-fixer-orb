@@ -1,9 +1,12 @@
 description: >-
-  Check, fix coding standards and commit changed files back to the repository.
+  Check, fix coding standards and commit changed files back to the repository. If you include a .php_cs file in your
+  repository then you can commit the parameters to the command.
 usage:
   version: 2.1
   orbs:
     stockfiller/php-cs-fixer@1.0.0
   workflows:
     foo:
-      - php-cs-fixer/fix
+      - php-cs-fixer/fix:
+          path: .
+          rules: "@PSR2"

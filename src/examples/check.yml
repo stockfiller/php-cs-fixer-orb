@@ -1,5 +1,6 @@
 description: >-
-  Check coding standards and fail the pipeline if the source code does not adhere to them
+  Check coding standards and fail the pipeline if the source code does not adhere to them. If you include a .php_cs file in your
+  repository then you can commit the parameters to the command.
 usage:
   version: 2.1
   orbs:
@@ -10,7 +11,9 @@ usage:
       steps:
         - checkout
         - composer/install
-        - php-cs-fixer/check
+        - php-cs-fixer/check:
+            path: .
+            rules: "@PSR2"
   workflows:
     foo:
       - check
