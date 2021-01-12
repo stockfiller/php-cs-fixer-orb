@@ -63,7 +63,7 @@ workflows:
           add-pr-comment: false
           fail-if-semver-not-indicated: true
           publish-version-tag: true
-          ssh-fingerprints: "ac:8d:d2:2b:8c:d9:a7:79:76:18:a0:78:5d:b4:a8:63"
+          ssh-fingerprints: "08:63:2c:89:06:3c:bc:ee:10:53:f9:05:37:5f:c5:48"
           context: [ orb-publishing ]
           requires: [ integration-test ]
           filters:
