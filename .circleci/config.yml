@@ -26,6 +26,8 @@ jobs:
       - image: cimg/php:7.4
     steps:
       - checkout
+      - composer/install:
+          working-dir: tests
       - php-cs-fixer/check:
           bin: tests/vendor/bin/php-cs-fixer
           path: tests/success.php
