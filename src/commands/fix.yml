@@ -1,0 +1,47 @@
+descripton: Fix source code and commit back changes to the the git repository
+parameters:
+  bin:
+    description: Path to the PHP CS Fixer binary
+    type: string
+    default: vendor/bin/php-cs-fixer
+  rules:
+    description: PHP CS Fixer rules
+    type: string
+    default: ""
+  path:
+    description: The path to fix files in
+    type: string
+    default: .
+  config:
+    description: The path to a .php_cs file
+    type: string
+    default: ""
+  commit-message:
+    description: Message of the commit for coding standards
+    type: string
+    default: "[CircleCI] Fix coding standards"
+  commit-author:
+    description: Name of the commit author
+    type: string
+    default: CircleCI
+  commit-email:
+    description: E-mail of the commit author
+    type: string
+    default: "circleci@${CIRCLE_PROJECT_USERNAME}.example"
+steps:
+  - run:
+      name: Fix coding standards
+      command: >-
+        << parameters.bin >> fix
+        --using-cache=no
+        <<# parameters.rules >> --rules=<< parameters.rules >> <</ parameters.rules >>
+        <<# parameters.config >> --config=<< parameters.config >> <</ parameters.config >>
+        << parameters.path >>
+  - orb-tools/configure-git:
+      user-email: << parameters.commit-email >>
+      user-name: << parameters.author >>
+  - run:
+      name: Commit changes to source code
+      command: |-
+        git commit --all --message "<< parameters.commit-message >>"
+        git push origin HEAD

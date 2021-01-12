@@ -1,0 +1,29 @@
+description: Check if the code adheres to the coding standards
+parameters:
+  bin:
+    description: Path to the PHP CS Fixer binary
+    type: string
+    default: vendor/bin/php-cs-fixer
+  rules:
+    description: PHP CS Fixer rules
+    type: string
+    default: ""
+  path:
+    description: The path to fix files in
+    type: string
+    default: .
+  config:
+    description: The path to a .php_cs file
+    type: string
+    default: ""
+steps:
+  - run:
+      name: Check coding standards
+      command: >-
+        << parameters.bin >> fix
+        --dry-run
+        --stop-on-violation
+        --using-cache=no
+        <<# parameters.rules >> --rules=<< parameters.rules >> <</ parameters.rules >>
+        <<# parameters.config >> --config=<< parameters.config >> <</ parameters.config >>
+        << parameters.path >>
