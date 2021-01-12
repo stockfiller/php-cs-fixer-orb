@@ -40,9 +40,10 @@ workflows:
     jobs:
       - orb-tools/lint
       - orb-tools/pack
-      - shellcheck/check:
-          dir: ./src/scripts
-          exclude: SC2148
+      # Uncomment if scripts are added
+      # - shellcheck/check:
+      #    dir: ./src/scripts
+      #    exclude: SC2148
       - orb-tools/publish-dev:
           orb-name: stockfiller/php-cs-fixer
           context: orb-publishing
