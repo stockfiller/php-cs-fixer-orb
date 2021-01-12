@@ -19,7 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-descripton: Fix source code and commit back changes to the the git repository
+description: Fix source code and commit back changes to the the git repository
 parameters:
   bin:
     description: Path to the PHP CS Fixer binary
@@ -53,9 +53,19 @@ parameters:
     description: E-mail of the commit author
     type: string
     default: "circleci@${CIRCLE_PROJECT_USERNAME}.example"
+  when:
+    description: >-
+      See CircleCI when attribute on run step: https://circleci.com/docs/2.0/configuration-reference/#the-when-attribute
+    type: enum
+    enum:
+      - always
+      - on_fail
+      - on_success
+    default: on_success
 steps:
   - run:
       name: Fix coding standards
+      when: << parameters.when >>
       command: >-
         << parameters.bin >> fix
         --using-cache=no
@@ -65,11 +75,15 @@ steps:
   - when:
       condition: << parameters.commit >>
       steps:
-        - orb-tools/configure-git:
-            user-email: << parameters.commit-email >>
-            user-name: << parameters.author >>
+        - run:
+            name: Configure git
+            when: << parameters.when >>
+            command: |-
+              git config --global user.name "<< parameters.commit-author >>"
+              git config --global user.email "<< parameters.commit-email >>"
         - run:
             name: Commit changes to source code
+            when: << parameters.when >>
             command: |-
               git commit --all --message "<< parameters.commit-message >>"
               git push origin HEAD

@@ -1,13 +1,15 @@
 description: >-
   Check coding standards and fail the pipeline if the source code does not adhere to them. If you include a .php_cs file in your
-  repository then you can commit the parameters to the command.
+  repository then you can omit the parameters to the command.
 usage:
   version: 2.1
   orbs:
-    stockfiller/php-cs-fixer@1.0.0
-    stockfiller/composer@2.0.0
+    php-cs-fixer: stockfiller/php-cs-fixer@1.0.0
+    composer: stockfiller/composer@2.0.0
   jobs:
     check:
+      docker:
+        - image: cimg/php:7.4
       steps:
         - checkout
         - composer/install
@@ -16,4 +18,5 @@ usage:
             rules: "@PSR2"
   workflows:
     foo:
-      - check
+      jobs:
+        - check
