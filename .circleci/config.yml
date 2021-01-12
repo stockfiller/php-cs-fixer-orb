@@ -1,0 +1,82 @@
+version: 2.1
+
+orbs:
+  composer: stockfiller/php-cs-fixer@<<pipeline.parameters.dev-orb-version>>
+  orb-tools: circleci/orb-tools@10.0
+  bats: circleci/bats@1.0
+  shellcheck: circleci/shellcheck@2.0
+
+# These parameters are used internally by orb-tools. Skip to the Jobs section.
+parameters:
+  run-integration-tests:
+    description: An internal flag to prevent integration test from running before a development version has been created.
+    type: boolean
+    default: false
+  dev-orb-version:
+    description: >-
+      The development version of the orb to test.
+      This value is automatically adjusted by the "trigger-integration-tests-workflow" job to correspond with the specific version created by the commit and should not be edited.
+      A "dev:alpha" version must exist for the initial pipeline run.
+    type: string
+    default: "dev:alpha"
+
+jobs:
+  integration-test:
+    docker:
+      - image: cimg/php:7.4
+    steps:
+      - checkout
+      - run: |-
+          cp tests/composer.json composer.json
+          mkdir -p /tmp/composer
+      # Test install Composer globally
+      - composer/install_bin:
+          install-dir: /tmp/composer
+      # Test working directory and flag
+      - composer/install:
+          working-dir: tests
+          classmap-authoritative: true
+      # Test global Composer
+      - composer/install:
+          bin: /tmp/composer/composer
+      # Test disable cache
+      - composer/install:
+          cache-version: ""
+      # Test default values
+      - composer/install
+
+workflows:
+  test-pack:
+    unless: << pipeline.parameters.run-integration-tests >>
+    jobs:
+      - orb-tools/lint
+      - orb-tools/pack
+      - shellcheck/check:
+          dir: ./src/scripts
+          exclude: SC2148
+      - orb-tools/publish-dev:
+          orb-name: stockfiller/php-cs-fixer
+          context: orb-publishing
+          requires:
+            - orb-tools/lint
+            - orb-tools/pack
+            - shellcheck/check
+      - orb-tools/trigger-integration-tests-workflow:
+          context: orb-publishing
+          requires: [ orb-tools/publish-dev ]
+
+  integration-test_deploy:
+    when: << pipeline.parameters.run-integration-tests >>
+    jobs:
+      - integration-test
+      - orb-tools/dev-promote-prod-from-commit-subject:
+          orb-name: stockfiller/php-cs-fixer
+          add-pr-comment: false
+          fail-if-semver-not-indicated: true
+          publish-version-tag: true
+          ssh-fingerprints: "ac:8d:d2:2b:8c:d9:a7:79:76:18:a0:78:5d:b4:a8:63"
+          context: [ orb-publishing ]
+          requires: [ integration-test ]
+          filters:
+            branches:
+              only: master
