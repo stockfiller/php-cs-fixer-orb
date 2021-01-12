@@ -3,83 +3,15 @@ version: 2.1
 description: Fix coding standards using PHP CS Fixer
 
 display:
-    home_url: "https://stockfiller.com"
-    source_url: "https://github.com/stockfiller/php-cs-fixer-orb"
+  home_url: "https://stockfiller.com"
+  source_url: "https://github.com/stockfiller/php-cs-fixer-orb"
 
 orbs:
-    composer: stockfiller/composer@0.0.35
+  composer: stockfiller/composer@2
+  orb-tools: circleci/orb-tools@10
 
 executors:
-    default:
-        docker:
-            -   image: cimg/php:7.4
-        resource_class: small
-
-jobs:
-    fix:
-        parameters:
-            executor:
-                description: Environment to run inside
-                type: executor
-                default: default
-            bin:
-                description: Path to the PHP CS Fixer binary
-                type: string
-                default: vendor/bin/php-cs-fixer
-            rules:
-                description: PHP CS Fixer rules
-                type: string
-                default: ""
-            flags:
-                description: Optional PHP CS Fixer flags to append to the fix command
-                type: string
-                default: ""
-            commit:
-                description: If true, will commit back coding standard fixes
-                type: boolean
-                default: true
-            commit-message:
-                description: Message of the commit for coding standards
-                type: string
-                default: "[CircleCI] Fix coding standards"
-            commit-author:
-                description: Name of the commit author
-                type: string
-                default: CircleCI
-            commit-email:
-                description: E-mail of the commit author
-                type: string
-                default: "circleci@${CIRCLE_PROJECT_USERNAME}.example"
-            path:
-                description: The path to fix files in
-                type: string
-                default: .
-        executor: << parameters.executor >>
-        environment:
-            PHP_CS_FIXER_FLAGS: >-
-                --using-cache=no
-                <<# parameters.rules >> --rules=<< parameters.rules >> <</ parameters.rules >>
-                << parameters.flags >>
-        steps:
-            - checkout
-            - composer/install
-            -   run:
-                    name: "Check coding standards"
-                    command: |-
-                        echo "PHP_CS_FIXER_FLAGS=${PHP_CS_FIXER_FLAGS}"
-                        << parameters.bin >> fix --dry-run --stop-on-violation ${PHP_CS_FIXER_FLAGS} << parameters.path >>
-            -   when:
-                    condition: << parameters.commit >>
-                    steps:
-                        -   run:
-                                name: "Fix coding standards"
-                                when: on_fail
-                                command: << parameters.bin >> fix ${PHP_CS_FIXER_FLAGS} << parameters.path >>
-                        -   run:
-                                name: "Commit changes to source code"
-                                when: on_fail
-                                command: |-
-                                    git config --global user.email "<< parameters.commit-email >>"
-                                    git config --global user.name "<< parameters.commit-author >>"
-                                    git commit --all --message "<< parameters.commit-message >>"
-                                    git push origin HEAD
+  default:
+    docker:
+      - image: cimg/php:7.4
+    resource_class: small

@@ -1,0 +1,50 @@
+# MIT License
+#
+# Copyright (c) 2021 Stockfiller AB
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+description: Check if the code adheres to the coding standards
+parameters:
+  bin:
+    description: Path to the PHP CS Fixer binary
+    type: string
+    default: vendor/bin/php-cs-fixer
+  rules:
+    description: PHP CS Fixer rules
+    type: string
+    default: ""
+  path:
+    description: The path to fix files in
+    type: string
+    default: ""
+  config:
+    description: The path to a .php_cs file
+    type: string
+    default: ""
+steps:
+  - run:
+      name: Check coding standards
+      command: >-
+        << parameters.bin >> fix
+        --dry-run
+        --stop-on-violation
+        --using-cache=no
+        <<# parameters.rules >> --rules=<< parameters.rules >> <</ parameters.rules >>
+        <<# parameters.config >> --config=<< parameters.config >> <</ parameters.config >>
+        <<# parameters.path >> << parameters.path >> <</ parameters.path >>
