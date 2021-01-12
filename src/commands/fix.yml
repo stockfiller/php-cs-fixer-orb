@@ -77,6 +77,12 @@ steps:
         - add_ssh_keys:
             fingerprints:
               - << parameters.ssh-fingerprint >>
+  - when:
+      condition: << parameters.commit >>
+      steps:
+        - orb-tools/configure-git:
+            user-email: << parameters.commit-email >>
+            user-name: << parameters.commit-author >>
   - run:
       name: Fix coding standards
       when: << parameters.when >>
@@ -89,12 +95,6 @@ steps:
   - when:
       condition: << parameters.commit >>
       steps:
-        - run:
-            name: Configure git
-            when: << parameters.when >>
-            command: |-
-              git config --global user.name "<< parameters.commit-author >>"
-              git config --global user.email "<< parameters.commit-email >>"
         - run:
             name: Commit changes to source code
             when: << parameters.when >>
