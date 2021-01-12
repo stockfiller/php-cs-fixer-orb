@@ -37,6 +37,10 @@ parameters:
     description: The path to a .php_cs file
     type: string
     default: ""
+  commit:
+    description: Commit fixes back to the repository
+    type: boolean
+    default: true
   commit-message:
     description: Message of the commit for coding standards
     type: string
@@ -58,11 +62,14 @@ steps:
         <<# parameters.rules >> --rules=<< parameters.rules >> <</ parameters.rules >>
         <<# parameters.config >> --config=<< parameters.config >> <</ parameters.config >>
         << parameters.path >>
-  - orb-tools/configure-git:
-      user-email: << parameters.commit-email >>
-      user-name: << parameters.author >>
-  - run:
-      name: Commit changes to source code
-      command: |-
-        git commit --all --message "<< parameters.commit-message >>"
-        git push origin HEAD
+  - when:
+      condition: << parameters.commit >>
+      steps:
+        - orb-tools/configure-git:
+            user-email: << parameters.commit-email >>
+            user-name: << parameters.author >>
+        - run:
+            name: Commit changes to source code
+            command: |-
+              git commit --all --message "<< parameters.commit-message >>"
+              git push origin HEAD

@@ -1,0 +1,8 @@
+{
+    "name": "stockfiller/php-cs-fixer-orb",
+    "type": "project",
+    "require": {
+        "php": "^7.4",
+        "friendsofphp/php-cs-fixer": "^2.17"
+    }
+}

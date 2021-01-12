@@ -1,17 +1,14 @@
-# Composer CircleCI Orb
+# PHP CS Fixer CircleCI Orb
 
-[![Build Status](https://circleci.com/gh/stockfiller/php-cs-fixer-orb.svg?style=svg)](https://app.circleci.com/pipelines/github/stockfiller/composer-orb)
+[![Build Status](https://circleci.com/gh/stockfiller/php-cs-fixer-orb.svg?style=svg)](https://app.circleci.com/pipelines/github/stockfiller/php-cs-fixer-orb)
 
-A [CircleCI orb](https://circleci.com/orbs/) for running [Composer](https://getcomposer.org/) tasks, such as installing
-dependencies.
-
-Doing a `composer install` inside of a CI environment often comes with more responsibilities, such as handling
-dependency caching. The purpose of this orb is to provide a quick way of doing a `composer install`, while handling the
-boilerplate caching for you.
+A [CircleCI orb](https://circleci.com/orbs/) for running [PHP CS Fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer)
+tasks, such checking and fixing coding standards in your repository.
 
 ## Usage
 
-For full usage guidelines, see the [orb registry listing](https://circleci.com/developer/orbs/orb/stockfiller/php-cs-fixer).
+For full usage guidelines, see
+the [orb registry listing](https://circleci.com/developer/orbs/orb/stockfiller/php-cs-fixer).
 
 ## Versioning
 
