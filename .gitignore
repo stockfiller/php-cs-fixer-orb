@@ -3,3 +3,4 @@ orb.yml
 .idea
 tests/vendor
 tests/composer.lock
+tests/.php_cs.cache
