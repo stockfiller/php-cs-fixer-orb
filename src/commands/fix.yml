@@ -53,6 +53,14 @@ parameters:
     description: E-mail of the commit author
     type: string
     default: "circleci@${CIRCLE_PROJECT_USERNAME}.example"
+  ssh-fingerprint:
+    description: >-
+      Fingerprints for SSH deploy key (add the public key as a read/write key on
+      GitHub; add the private key in CircleCI via SSH Permissions, with
+      github.com as Hostname). Used to push a commit back to the project's
+      repository.
+    type: string
+    default: ""
   when:
     description: >-
       See CircleCI when attribute on run step: https://circleci.com/docs/2.0/configuration-reference/#the-when-attribute
@@ -63,6 +71,12 @@ parameters:
       - on_success
     default: on_success
 steps:
+  - when:
+      condition: << parameters.ssh-fingerprint >>
+      steps:
+        - add_ssh_keys:
+            fingerprints:
+              - << parameters.ssh-fingerprint >>
   - run:
       name: Fix coding standards
       when: << parameters.when >>

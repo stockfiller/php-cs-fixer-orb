@@ -56,6 +56,14 @@ parameters:
     description: E-mail of the commit author
     type: string
     default: "circleci@${CIRCLE_PROJECT_USERNAME}.example"
+  ssh-fingerprint:
+    description: >-
+      Fingerprints for SSH deploy key (add the public key as a read/write key on
+      GitHub; add the private key in CircleCI via SSH Permissions, with
+      github.com as Hostname). Used to push a commit back to the project's
+      repository.
+    type: string
+    default: ""
 executor: << parameters.executor >>
 steps:
   - checkout
@@ -74,3 +82,4 @@ steps:
             rules: << parameters.rules >>
             path: << parameters.path >>
             config: << parameters.config >>
+            ssh-fingerprint: << parameters.ssh-fingerprint >>
