@@ -19,19 +19,29 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-version: 2.1
+description: Configure Git author
+parameters:
+  author:
+    description: Name of the author. Defaults to author that triggered this commit.
+    type: string
+    default: ""
+  email:
+    description: Email of the author. Defaults to author that triggered this commit.
+    type: string
+    default: ""
+steps:
+  - run: |-
+      if [ -z "<< parameters.author >>" ]; then
+        AUTHOR=$(git show --no-patch --format='%an' "${CIRCLE_SHA1}")
+      else
+        AUTHOR="<< parameters.author >>"
+      fi
 
-description: Fix coding standards using PHP CS Fixer
+      if [ -z "<< parameters.email >>" ]; then
+        EMAIL=$(git show --no-patch --format='%ae' "${CIRCLE_SHA1}")
+      else
+        EMAIL="<< parameters.email >>"
+      fi
 
-display:
-  home_url: "https://stockfiller.com"
-  source_url: "https://github.com/stockfiller/php-cs-fixer-orb"
-
-orbs:
-  composer: stockfiller/composer@2
-
-executors:
-  default:
-    docker:
-      - image: cimg/php:7.4
-    resource_class: small
+      git config --global user.email "${EMAIL}"
+      git config --global user.name "${AUTHOR}"
