@@ -29,7 +29,6 @@ display:
 
 orbs:
   composer: stockfiller/composer@2
-  orb-tools: circleci/orb-tools@10
 
 executors:
   default:
