@@ -71,6 +71,18 @@ parameters:
       - on_success
     default: on_success
 steps:
+  - when:
+      condition: << parameters.ssh-fingerprint >>
+      steps:
+        - add_ssh_keys:
+            fingerprints:
+              - << parameters.ssh-fingerprint >>
+  - when:
+      condition: << parameters.commit >>
+      steps:
+        - configure_git:
+            email: << parameters.commit-email >>
+            author: << parameters.commit-author >>
   - run:
       name: Fix coding standards
       when: << parameters.when >>
@@ -83,15 +95,6 @@ steps:
   - when:
       condition: << parameters.commit >>
       steps:
-        - when:
-            condition: << parameters.ssh-fingerprint >>
-            steps:
-              - add_ssh_keys:
-                  fingerprints:
-                    - << parameters.ssh-fingerprint >>
-        - configure_git:
-            email: << parameters.commit-email >>
-            author: << parameters.commit-author >>
         - run:
             name: Commit changes to source code
             when: << parameters.when >>
