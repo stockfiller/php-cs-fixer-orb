@@ -48,11 +48,11 @@ parameters:
   commit-author:
     description: Name of the commit author
     type: string
-    default: CircleCI
+    default: ""
   commit-email:
     description: E-mail of the commit author
     type: string
-    default: "circleci@${CIRCLE_PROJECT_USERNAME}.example"
+    default: ""
   ssh-fingerprint:
     description: >-
       Fingerprints for SSH deploy key (add the public key as a read/write key on
@@ -77,12 +77,6 @@ steps:
         - add_ssh_keys:
             fingerprints:
               - << parameters.ssh-fingerprint >>
-  - when:
-      condition: << parameters.commit >>
-      steps:
-        - orb-tools/configure-git:
-            user-email: << parameters.commit-email >>
-            user-name: << parameters.commit-author >>
   - run:
       name: Fix coding standards
       when: << parameters.when >>
@@ -95,6 +89,9 @@ steps:
   - when:
       condition: << parameters.commit >>
       steps:
+        - configure_git:
+            email: << parameters.user-email >>
+            author: << parameters.user-author >>
         - run:
             name: Commit changes to source code
             when: << parameters.when >>
