@@ -22,11 +22,11 @@
 description: Configure Git author
 parameters:
   author:
-    description: Name of the author
+    description: Name of the author. Defaults to author that triggered this commit.
     type: string
     default: ""
   email:
-    description: Email of the author
+    description: Email of the author. Defaults to author that triggered this commit.
     type: string
     default: ""
 steps:
