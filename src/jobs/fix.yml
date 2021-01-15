@@ -83,3 +83,5 @@ steps:
             path: << parameters.path >>
             config: << parameters.config >>
             ssh-fingerprint: << parameters.ssh-fingerprint >>
+            commit-author: << parameters.commit-author >>
+            commit-email: << parameters.commit-email >>
