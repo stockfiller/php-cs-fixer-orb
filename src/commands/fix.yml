@@ -78,7 +78,7 @@ steps:
             fingerprints:
               - << parameters.ssh-fingerprint >>
   - when:
-      condition: << paramaters.commit >>
+      condition: << parameters.commit >>
       steps:
         - configure_git:
             email: << parameters.commit-email >>
