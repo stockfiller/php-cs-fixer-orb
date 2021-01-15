@@ -90,8 +90,8 @@ steps:
       condition: << parameters.commit >>
       steps:
         - configure_git:
-            email: << parameters.user-email >>
-            author: << parameters.user-author >>
+            email: << parameters.commit-email >>
+            author: << parameters.commit-author >>
         - run:
             name: Commit changes to source code
             when: << parameters.when >>
