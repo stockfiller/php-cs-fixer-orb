@@ -30,18 +30,20 @@ parameters:
     type: string
     default: ""
 steps:
-  - run: |-
-      if [ -z "<< parameters.author >>" ]; then
-        AUTHOR=$(git show --no-patch --format='%an' "${CIRCLE_SHA1}")
-      else
-        AUTHOR="<< parameters.author >>"
-      fi
+  - run:
+      name: Configure git
+      command: |-
+        if [ -z "<< parameters.author >>" ]; then
+          AUTHOR=$(git show --no-patch --format='%an' "${CIRCLE_SHA1}")
+        else
+          AUTHOR="<< parameters.author >>"
+        fi
 
-      if [ -z "<< parameters.email >>" ]; then
-        EMAIL=$(git show --no-patch --format='%ae' "${CIRCLE_SHA1}")
-      else
-        EMAIL="<< parameters.email >>"
-      fi
+        if [ -z "<< parameters.email >>" ]; then
+          EMAIL=$(git show --no-patch --format='%ae' "${CIRCLE_SHA1}")
+        else
+          EMAIL="<< parameters.email >>"
+        fi
 
-      git config --global user.email "${EMAIL}"
-      git config --global user.name "${AUTHOR}"
+        git config --global user.email "${EMAIL}"
+        git config --global user.name "${AUTHOR}"
