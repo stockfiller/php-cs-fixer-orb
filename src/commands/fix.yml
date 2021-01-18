@@ -61,18 +61,12 @@ parameters:
       repository.
     type: string
     default: ""
-  when:
-    description: >-
-      See CircleCI when attribute on run step: https://circleci.com/docs/2.0/configuration-reference/#the-when-attribute
-    type: enum
-    enum:
-      - always
-      - on_fail
-      - on_success
-    default: on_success
 steps:
   - when:
-      condition: << parameters.ssh-fingerprint >>
+      condition:
+        and:
+          - << parameters.ssh-fingerprint >>
+          - << parameters.commit >>
       steps:
         - add_ssh_keys:
             fingerprints:
@@ -83,9 +77,14 @@ steps:
         - configure_git:
             email: << parameters.commit-email >>
             author: << parameters.commit-author >>
+  - check:
+      bin: << parameters.bin >>
+      rules: << parameters.rules >>
+      config: << parameters.config >>
+      path: << parameters.path >>
   - run:
       name: Fix coding standards
-      when: << parameters.when >>
+      when: on_fail
       command: >-
         << parameters.bin >> fix
         --using-cache=no
@@ -97,7 +96,7 @@ steps:
       steps:
         - run:
             name: Commit changes to source code
-            when: << parameters.when >>
+            when: on_fail
             command: |-
               git commit --all --message "<< parameters.commit-message >>"
               git push origin HEAD
