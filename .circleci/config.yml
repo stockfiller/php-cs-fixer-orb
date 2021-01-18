@@ -33,11 +33,6 @@ jobs:
           bin: tests/vendor/bin/php-cs-fixer
           path: tests/success.php
           rules: "@PSR2"
-      - php-cs-fixer/fix:
-          bin: tests/vendor/bin/php-cs-fixer
-          commit: false
-          path: tests/error.php
-          rules: "@PSR2"
 
 workflows:
   test-pack:
