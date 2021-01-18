@@ -51,11 +51,11 @@ parameters:
   commit-author:
     description: Name of the commit author
     type: string
-    default: CircleCI
+    default: ""
   commit-email:
     description: E-mail of the commit author
     type: string
-    default: "circleci@${CIRCLE_PROJECT_USERNAME}.example"
+    default: ""
   ssh-fingerprint:
     description: >-
       Fingerprints for SSH deploy key (add the public key as a read/write key on
