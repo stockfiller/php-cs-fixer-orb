@@ -68,20 +68,12 @@ executor: << parameters.executor >>
 steps:
   - checkout
   - composer/install
-  - check:
+  - fix:
       bin: << parameters.bin >>
       rules: << parameters.rules >>
       path: << parameters.path >>
       config: << parameters.config >>
-  - when:
-      condition: << parameters.commit >>
-      steps:
-        - fix:
-            when: on_fail
-            bin: << parameters.bin >>
-            rules: << parameters.rules >>
-            path: << parameters.path >>
-            config: << parameters.config >>
-            ssh-fingerprint: << parameters.ssh-fingerprint >>
-            commit-author: << parameters.commit-author >>
-            commit-email: << parameters.commit-email >>
+      ssh-fingerprint: << parameters.ssh-fingerprint >>
+      commit: << parameters.commit >>
+      commit-author: << parameters.commit-author >>
+      commit-email: << parameters.commit-email >>
