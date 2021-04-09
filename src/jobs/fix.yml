@@ -64,10 +64,15 @@ parameters:
       repository.
     type: string
     default: ""
+  composer-cache-version:
+    description: Bump to invalidate cache. Set to empty string to disable caching
+    default: v1
+    type: string
 executor: << parameters.executor >>
 steps:
   - checkout
-  - composer/install
+  - composer/install:
+      cache-version: << parameters.composer-cache-version >>
   - fix:
       bin: << parameters.bin >>
       rules: << parameters.rules >>
